@@ -1,1 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QR Namecard</title>
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22QR%20Namecard%22%2C%22short_name%22%3A%22QRCard%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%232563eb%22%7D">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-800 flex flex-col justify-between">
 
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center">
+        <h1 class="text-lg font-bold tracking-wide">QR Namecard</h1>
+        <button id="btnReset" class="text-xs bg-blue-700 hover:bg-blue-800 px-3 py-1.5 rounded-lg font-medium transition">Reset</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="p-4 max-w-md mx-auto w-full space-y-4 flex-grow">
+        
+        <!-- Action: Contact Picker (Android Chrome) -->
+        <div id="pickerSection" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 hidden">
+            <button id="btnPickContact" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-xl shadow transition flex items-center justify-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <span>Pick from Phone Contacts</span>
+            </button>
+        </div>
+
+        <!-- Form Input Form -->
+        <div class="bg-slate-100 p-4 rounded-2xl shadow-inner border border-gray-200 space-y-3">
+            <h2 class="text-xs font-extrabold text-gray-500 uppercase tracking-wider mb-2">Contact Information</h2>
+            
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">First name *</label>
+                    <input type="text" id="firstName" placeholder="First name" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Last name</label>
+                    <input type="text" id="lastName" placeholder="Last name" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Mobile *</label>
+                    <input type="tel" id="phone" placeholder="Phone number" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Email</label>
+                    <input type="email" id="email" placeholder="Email address" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Company</label>
+                    <input type="text" id="company" placeholder="Company name" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Title</label>
+                    <input type="text" id="title" placeholder="Job title" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Website</label>
+                <input type="url" id="website" placeholder="https://website.com" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Work address</label>
+                <input type="text" id="address" placeholder="Street, City, Country..." class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Avatar / Logo (Visual Overlay)</label>
+                <input type="file" id="avatarInput" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                <span class="text-[10px] text-gray-400 mt-1 block">* Note: Avatar appears visually on screen/saved image for recognition, but phone contacts natively import text only.</span>
+            </div>
+        </div>
+
+        <!-- QR Display Section -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center space-y-4">
+            <h2 class="text-xs font-extrabold text-gray-500 uppercase tracking-wider">QR Code</h2>
+            
+            <div id="qrcodeWrapper" class="relative p-3 bg-white border-2 border-dashed border-gray-200 rounded-2xl flex justify-center items-center shadow-inner">
+                <div id="qrcode"></div>
+                <!-- Avatar Center Overlay -->
+                <div id="avatarOverlay" class="absolute hidden w-12 h-12 rounded-full border-2 border-white shadow-md overflow-hidden bg-white flex items-center justify-center">
+                    <img id="centerAvatarImg" src="" alt="Avatar" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Prominent Scan Me Text -->
+            <div class="text-blue-600 font-black tracking-widest text-lg animate-pulse uppercase bg-blue-50 px-6 py-2 rounded-xl border border-blue-100 shadow-sm">
+                SCAN ME
+            </div>
+
+            <!-- Save QR Button -->
+            <button id="btnSaveQR" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition flex items-center justify-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span>Save QR code</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-gray-400">
+        QR Namecard - 100% Client-Side Secure
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const phoneInput = document.getElementById('phone');
+        const emailInput = document.getElementById('email');
+        const companyInput = document.getElementById('company');
+        const titleInput = document.getElementById('title');
+        const websiteInput = document.getElementById('website');
+        const addressInput = document.getElementById('address');
+        const avatarInput = document.getElementById('avatarInput');
+        
+        const qrcodeContainer = document.getElementById('qrcode');
+        const avatarOverlay = document.getElementById('avatarOverlay');
+        const centerAvatarImg = document.getElementById('centerAvatarImg');
+        const btnSaveQR = document.getElementById('btnSaveQR');
+        const btnReset = document.getElementById('btnReset');
+        const btnPickContact = document.getElementById('btnPickContact');
+        const pickerSection = document.getElementById('pickerSection');
+
+        let currentAvatarBase64 = localStorage.getItem('qr_avatar') || '';
+        let wakeLock = null;
+
+        function loadSavedData() {
+            firstNameInput.value = localStorage.getItem('qr_firstname') || '';
+            lastNameInput.value = localStorage.getItem('qr_lastname') || '';
+            phoneInput.value = localStorage.getItem('qr_phone') || '';
+            emailInput.value = localStorage.getItem('qr_email') || '';
+            companyInput.value = localStorage.getItem('qr_company') || '';
+            titleInput.value = localStorage.getItem('qr_title') || '';
+            websiteInput.value = localStorage.getItem('qr_website') || '';
+            addressInput.value = localStorage.getItem('qr_address') || '';
+            if (currentAvatarBase64) {
+                centerAvatarImg.src = currentAvatarBase64;
+                avatarOverlay.classList.remove('hidden');
+            }
+            generateQR();
+        }
+
+        function saveData() {
+            localStorage.setItem('qr_firstname', firstNameInput.value);
+            localStorage.setItem('qr_lastname', lastNameInput.value);
+            localStorage.setItem('qr_phone', phoneInput.value);
+            localStorage.setItem('qr_email', emailInput.value);
+            localStorage.setItem('qr_company', companyInput.value);
+            localStorage.setItem('qr_title', titleInput.value);
+            localStorage.setItem('qr_website', websiteInput.value);
+            localStorage.setItem('qr_address', addressInput.value);
+            if (currentAvatarBase64) {
+                localStorage.setItem('qr_avatar', currentAvatarBase64);
+            }
+        }
+
+        // Robust vCard generator with UTF-8 encoding safeguard
+        function generateVCard() {
+            const fName = firstNameInput.value.trim();
+            const lName = lastNameInput.value.trim();
+            const fullName = [lName, fName].filter(Boolean).join(' ') || 'Name';
+            
+            return `BEGIN:VCARD
+VERSION:3.0
+N:${lName};${fName};;;
+FN:${fullName}
+TEL;TYPE=CELL:${phoneInput.value.trim()}
+EMAIL;TYPE=WORK:${emailInput.value.trim()}
+ORG:${companyInput.value.trim()}
+TITLE:${titleInput.value.trim()}
+URL:${websiteInput.value.trim()}
+ADR;TYPE=WORK:;;${addressInput.value.trim()}
+END:VCARD`;
+        }
+
+        let qrCodeInstance = null;
+        function generateQR() {
+            saveData();
+            qrcodeContainer.innerHTML = "";
+            const vcardData = generateVCard();
+            
+            try {
+                // Safe encoding to support Vietnamese characters & special symbols without crashing
+                qrCodeInstance = new QRCode(qrcodeContainer, {
+                    text: vcardData,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } catch (err) {
+                console.error("QR Generation error:", err);
+            }
+
+            if (currentAvatarBase64) {
+                centerAvatarImg.src = currentAvatarBase64;
+                avatarOverlay.classList.remove('hidden');
+            } else {
+                avatarOverlay.classList.add('hidden');
+            }
+        }
+
+        // Event Listeners for inputs
+        [firstNameInput, lastNameInput, phoneInput, emailInput, companyInput, titleInput, websiteInput, addressInput].forEach(input => {
+            input.addEventListener('input', generateQR);
+        });
+
+        // Avatar Handling
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentAvatarBase64 = event.target.result;
+                    centerAvatarImg.src = currentAvatarBase64;
+                    avatarOverlay.classList.remove('hidden');
+                    saveData();
+                    generateQR();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Reset
+        btnReset.addEventListener('click', function() {
+            if (confirm('Are you sure you want to reset all data?')) {
+                localStorage.clear();
+                currentAvatarBase64 = '';
+                firstNameInput.value = '';
+                lastNameInput.value = '';
+                phoneInput.value = '';
+                emailInput.value = '';
+                companyInput.value = '';
+                titleInput.value = '';
+                websiteInput.value = '';
+                addressInput.value = '';
+                avatarInput.value = '';
+                avatarOverlay.classList.add('hidden');
+                generateQR();
+            }
+        });
+
+        // Fixed Contact Picker API parsing for Android Chrome
+        if ('contacts' in navigator && 'select' in navigator.contacts) {
+            pickerSection.classList.remove('hidden');
+            btnPickContact.addEventListener('click', async () => {
+                const supportedProps = ['name', 'tel', 'email', 'address', 'icon'];
+                try {
+                    const contacts = await navigator.contacts.select(supportedProps, { multiple: false });
+                    if (contacts && contacts.length > 0) {
+                        const contact = contacts[0];
+                        
+                        // Parse names safely
+                        if (contact.name && contact.name.length > 0) {
+                            const nameObj = contact.name[0];
+                            firstNameInput.value = nameObj.givenName || nameObj.displayName || '';
+                            lastNameInput.value = nameObj.familyName || '';
+                        }
+                        
+                        // Parse phone
+                        if (contact.tel && contact.tel.length > 0) {
+                            phoneInput.value = contact.tel[0];
+                        }
+                        
+                        // Parse email
+                        if (contact.email && contact.email.length > 0) {
+                            emailInput.value = contact.email[0];
+                        }
+                        
+                        // Parse address
+                        if (contact.address && contact.address.length > 0) {
+                            const addr = contact.address[0];
+                            addressInput.value = [addr.streetAddress, addr.city, addr.region].filter(Boolean).join(', ');
+                        }
+
+                        // Parse contact icon/avatar if available
+                        if (contact.icon && contact.icon.length > 0) {
+                            const blob = contact.icon[0];
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                currentAvatarBase64 = e.target.result;
+                                centerAvatarImg.src = currentAvatarBase64;
+                                avatarOverlay.classList.remove('hidden');
+                                saveData();
+                                generateQR();
+                            };
+                            reader.readAsDataURL(blob);
+                        }
+                        
+                        generateQR();
+                    }
+                } catch (ex) {
+                    console.log('Contact picker error or cancelled', ex);
+                }
+            });
+        }
+
+        // Save QR code as image
+        btnSaveQR.addEventListener('click', function() {
+            const canvas = qrcodeContainer.querySelector('canvas');
+            if (!canvas) return;
+            
+            const downloadCanvas = document.createElement('canvas');
+            downloadCanvas.width = canvas.width;
+            downloadCanvas.height = canvas.height;
+            const ctx = downloadCanvas.getContext('2d');
+            
+            ctx.drawImage(canvas, 0, 0);
+            
+            if (currentAvatarBase64) {
+                const img = new Image();
+                img.onload = function() {
+                    const size = canvas.width * 0.24;
+                    const x = (canvas.width - size) / 2;
+                    const y = (canvas.height - size) / 2;
+                    
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(canvas.width/2, canvas.height/2, size/2 + 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(canvas.width/2, canvas.height/2, size/2, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.drawImage(img, x, y, size, size);
+                    ctx.restore();
+                    
+                    triggerDownload(downloadCanvas);
+                };
+                img.src = currentAvatarBase64;
+            } else {
+                triggerDownload(downloadCanvas);
+            }
+        });
+
+        function triggerDownload(canvas) {
+            const link = document.createElement('a');
+            link.download = 'QR-Namecard.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Wake Lock API (Keep screen bright)
+        async function requestWakeLock() {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                } catch (err) {}
+            }
+        }
+
+        document.addEventListener('visibilitychange', async () => {
+            if (wakeLock !== null && document.visibilityState === 'visible') {
+                await requestWakeLock();
+            }
+        });
+
+        requestWakeLock();
+        loadSavedData();
+    </script>
+</body>
+</html>
