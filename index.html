@@ -6,7 +6,8 @@
     <title>QR Namecard</title>
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22QR%20Namecard%22%2C%22short_name%22%3A%22QRCard%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%232563eb%22%7D">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Sử dụng thư viện QRious hỗ trợ chuẩn Unicode / Tiếng Việt tuyệt đối -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
         body { -webkit-tap-highlight-color: transparent; }
     </style>
@@ -80,7 +81,6 @@
             <div>
                 <label class="block text-xs font-bold text-gray-700 mb-1">Avatar / Logo (Visual Overlay)</label>
                 <input type="file" id="avatarInput" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                <span class="text-[10px] text-gray-400 mt-1 block">* Note: Avatar appears visually on screen/saved image for recognition, but phone contacts natively import text only.</span>
             </div>
         </div>
 
@@ -89,7 +89,7 @@
             <h2 class="text-xs font-extrabold text-gray-500 uppercase tracking-wider">QR Code</h2>
             
             <div id="qrcodeWrapper" class="relative p-3 bg-white border-2 border-dashed border-gray-200 rounded-2xl flex justify-center items-center shadow-inner">
-                <div id="qrcode"></div>
+                <canvas id="qrCanvas"></canvas>
                 <!-- Avatar Center Overlay -->
                 <div id="avatarOverlay" class="absolute hidden w-12 h-12 rounded-full border-2 border-white shadow-md overflow-hidden bg-white flex items-center justify-center">
                     <img id="centerAvatarImg" src="" alt="Avatar" class="w-full h-full object-cover">
@@ -127,7 +127,6 @@
         const addressInput = document.getElementById('address');
         const avatarInput = document.getElementById('avatarInput');
         
-        const qrcodeContainer = document.getElementById('qrcode');
         const avatarOverlay = document.getElementById('avatarOverlay');
         const centerAvatarImg = document.getElementById('centerAvatarImg');
         const btnSaveQR = document.getElementById('btnSaveQR');
@@ -137,6 +136,14 @@
 
         let currentAvatarBase64 = localStorage.getItem('qr_avatar') || '';
         let wakeLock = null;
+
+        // Initialize QRious generator instance
+        const qr = new QRious({
+            element: document.getElementById('qrCanvas'),
+            size: 200,
+            level: 'H',
+            value: 'BEGIN:VCARD\nVERSION:3.0\nEND:VCARD'
+        });
 
         function loadSavedData() {
             firstNameInput.value = localStorage.getItem('qr_firstname') || '';
@@ -168,7 +175,6 @@
             }
         }
 
-        // Robust vCard generator with UTF-8 encoding safeguard
         function generateVCard() {
             const fName = firstNameInput.value.trim();
             const lName = lastNameInput.value.trim();
@@ -187,25 +193,12 @@ ADR;TYPE=WORK:;;${addressInput.value.trim()}
 END:VCARD`;
         }
 
-        let qrCodeInstance = null;
         function generateQR() {
             saveData();
-            qrcodeContainer.innerHTML = "";
             const vcardData = generateVCard();
             
-            try {
-                // Safe encoding to support Vietnamese characters & special symbols without crashing
-                qrCodeInstance = new QRCode(qrcodeContainer, {
-                    text: vcardData,
-                    width: 200,
-                    height: 200,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-            } catch (err) {
-                console.error("QR Generation error:", err);
-            }
+            // QRious handles UTF-8 / Vietnamese characters natively and safely
+            qr.value = vcardData;
 
             if (currentAvatarBase64) {
                 centerAvatarImg.src = currentAvatarBase64;
@@ -255,7 +248,7 @@ END:VCARD`;
             }
         });
 
-        // Fixed Contact Picker API parsing for Android Chrome
+        // Correctly parse contact picker response for names (W3C standard)
         if ('contacts' in navigator && 'select' in navigator.contacts) {
             pickerSection.classList.remove('hidden');
             btnPickContact.addEventListener('click', async () => {
@@ -265,30 +258,33 @@ END:VCARD`;
                     if (contacts && contacts.length > 0) {
                         const contact = contacts[0];
                         
-                        // Parse names safely
+                        // Parse full name string from contact.name array
                         if (contact.name && contact.name.length > 0) {
-                            const nameObj = contact.name[0];
-                            firstNameInput.value = nameObj.givenName || nameObj.displayName || '';
-                            lastNameInput.value = nameObj.familyName || '';
+                            const rawName = contact.name[0].trim();
+                            const parts = rawName.split(/\s+/);
+                            if (parts.length === 1) {
+                                lastNameInput.value = '';
+                                firstNameInput.value = parts[0];
+                            } else {
+                                // Vietnamese naming rule: First word = Last name, remainder = First name
+                                lastNameInput.value = parts[0];
+                                firstNameInput.value = parts.slice(1).join(' ');
+                            }
                         }
                         
-                        // Parse phone
                         if (contact.tel && contact.tel.length > 0) {
                             phoneInput.value = contact.tel[0];
                         }
                         
-                        // Parse email
                         if (contact.email && contact.email.length > 0) {
                             emailInput.value = contact.email[0];
                         }
                         
-                        // Parse address
                         if (contact.address && contact.address.length > 0) {
                             const addr = contact.address[0];
                             addressInput.value = [addr.streetAddress, addr.city, addr.region].filter(Boolean).join(', ');
                         }
 
-                        // Parse contact icon/avatar if available
                         if (contact.icon && contact.icon.length > 0) {
                             const blob = contact.icon[0];
                             const reader = new FileReader();
@@ -310,9 +306,9 @@ END:VCARD`;
             });
         }
 
-        // Save QR code as image
+        // Save QR code as image with center avatar merged
         btnSaveQR.addEventListener('click', function() {
-            const canvas = qrcodeContainer.querySelector('canvas');
+            const canvas = document.getElementById('qrCanvas');
             if (!canvas) return;
             
             const downloadCanvas = document.createElement('canvas');
