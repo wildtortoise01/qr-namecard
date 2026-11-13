@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -16,71 +16,76 @@
     <!-- Header -->
     <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center">
         <h1 class="text-lg font-bold tracking-wide">QR Namecard</h1>
-        <button id="btnReset" class="text-xs bg-blue-700 hover:bg-blue-800 px-3 py-1.5 rounded-lg font-medium transition">Xóa trắng</button>
+        <button id="btnReset" class="text-xs bg-blue-700 hover:bg-blue-800 px-3 py-1.5 rounded-lg font-medium transition">Reset</button>
     </header>
 
     <!-- Main Content -->
     <main class="p-4 max-w-md mx-auto w-full space-y-4 flex-grow">
         
         <!-- Action: Contact Picker (Android Chrome) -->
-        <div id="pickerSection" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+        <div id="pickerSection" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 hidden">
             <button id="btnPickContact" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-xl shadow transition flex items-center justify-center space-x-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <span>Chọn từ danh bạ điện thoại</span>
+                <span>Pick from Phone Contacts</span>
             </button>
-            <p class="text-xs text-gray-400 text-center mt-2">Hoặc tự điền thông tin bên dưới nếu muốn</p>
         </div>
 
-        <!-- Form Input Form -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
-            <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Thông tin liên hệ</h2>
+        <!-- Form Input Form with distinct light background -->
+        <div class="bg-slate-100 p-4 rounded-2xl shadow-inner border border-gray-200 space-y-3">
+            <h2 class="text-xs font-extrabold text-gray-500 uppercase tracking-wider mb-2">Contact Information</h2>
             
-            <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">Họ và tên *</label>
-                <input type="text" id="fullName" placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
-            </div>
-
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Số điện thoại *</label>
-                    <input type="tel" id="phone" placeholder="0901234567" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    <label class="block text-xs font-bold text-gray-700 mb-1">First name *</label>
+                    <input type="text" id="firstName" placeholder="First name" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Email</label>
-                    <input type="email" id="email" placeholder="email@domain.com" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Last name</label>
+                    <input type="text" id="lastName" placeholder="Last name" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Công ty</label>
-                    <input type="text" id="company" placeholder="Tên công ty" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Mobile *</label>
+                    <input type="tel" id="phone" placeholder="Phone number" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Chức vụ</label>
-                    <input type="text" id="title" placeholder="Giám đốc / Kỹ sư..." class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Email</label>
+                    <input type="email" id="email" placeholder="Email address" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Company</label>
+                    <input type="text" id="company" placeholder="Company name" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Title</label>
+                    <input type="text" id="title" placeholder="Job title" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">Website</label>
-                <input type="url" id="website" placeholder="https://website.com" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">Website</label>
+                <input type="url" id="website" placeholder="https://website.com" class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
             </div>
 
             <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">Địa chỉ văn phòng</label>
-                <input type="text" id="address" placeholder="Số nhà, Đường, Quận/Huyện..." class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">Work address</label>
+                <input type="text" id="address" placeholder="Street, City, Country..." class="w-full px-3 py-2 bg-white border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
             </div>
 
             <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">Ảnh đại diện / Logo (Tùy chọn)</label>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Avatar / Logo (Optional)</label>
                 <input type="file" id="avatarInput" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
             </div>
         </div>
 
         <!-- QR Display Section -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center space-y-4">
-            <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wider">Mã QR Danh Bạ</h2>
+            <h2 class="text-xs font-extrabold text-gray-500 uppercase tracking-wider">QR Code</h2>
             
             <div id="qrcodeWrapper" class="relative p-3 bg-white border-2 border-dashed border-gray-200 rounded-2xl flex justify-center items-center shadow-inner">
                 <div id="qrcode"></div>
@@ -90,9 +95,9 @@
                 </div>
             </div>
 
-            <!-- Scan Me Text -->
-            <div class="text-blue-600 font-extrabold tracking-widest text-sm animate-pulse uppercase">
-                Scan me
+            <!-- Prominent Scan Me Text -->
+            <div class="text-blue-600 font-black tracking-widest text-lg animate-pulse uppercase bg-blue-50 px-6 py-2 rounded-xl border border-blue-100 shadow-sm">
+                SCAN ME
             </div>
 
             <!-- Save QR Button -->
@@ -106,12 +111,13 @@
 
     <!-- Footer -->
     <footer class="text-center py-4 text-xs text-gray-400">
-        QR Namecard - Bảo mật tuyệt đối trên thiết bị của bạn
+        QR Namecard - 100% Client-Side Secure
     </footer>
 
     <!-- JavaScript Logic -->
     <script>
-        const fullNameInput = document.getElementById('fullName');
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
         const phoneInput = document.getElementById('phone');
         const emailInput = document.getElementById('email');
         const companyInput = document.getElementById('company');
@@ -126,13 +132,15 @@
         const btnSaveQR = document.getElementById('btnSaveQR');
         const btnReset = document.getElementById('btnReset');
         const btnPickContact = document.getElementById('btnPickContact');
+        const pickerSection = document.getElementById('pickerSection');
 
         let currentAvatarBase64 = localStorage.getItem('qr_avatar') || '';
         let wakeLock = null;
 
         // Load saved data from localStorage
         function loadSavedData() {
-            fullNameInput.value = localStorage.getItem('qr_name') || '';
+            firstNameInput.value = localStorage.getItem('qr_firstname') || '';
+            lastNameInput.value = localStorage.getItem('qr_lastname') || '';
             phoneInput.value = localStorage.getItem('qr_phone') || '';
             emailInput.value = localStorage.getItem('qr_email') || '';
             companyInput.value = localStorage.getItem('qr_company') || '';
@@ -147,7 +155,8 @@
         }
 
         function saveData() {
-            localStorage.setItem('qr_name', fullNameInput.value);
+            localStorage.setItem('qr_firstname', firstNameInput.value);
+            localStorage.setItem('qr_lastname', lastNameInput.value);
             localStorage.setItem('qr_phone', phoneInput.value);
             localStorage.setItem('qr_email', emailInput.value);
             localStorage.setItem('qr_company', companyInput.value);
@@ -159,17 +168,13 @@
             }
         }
 
+        // Generate vCard 3.0 with explicit UTF-8 encoding support
         function generateVCard() {
-            return `BEGIN:VCARD
-VERSION:3.0
-FN:${fullNameInput.value || 'Name'}
-TEL:${phoneInput.value || ''}
-EMAIL:${emailInput.value || ''}
-ORG:${companyInput.value || ''}
-TITLE:${titleInput.value || ''}
-URL:${websiteInput.value || ''}
-ADR:;;${addressInput.value || ''}
-END:VCARD`;
+            const fName = firstNameInput.value.trim();
+            const lName = lastNameInput.value.trim();
+            const fullName = `${lName} ${fName}`.trim() || 'Name';
+            
+            return `BEGIN:VCARD\nVERSION:3.0\nN:${lName};${fName};;;\nFN:${fullName}\nTEL;TYPE=CELL:${phoneInput.value.trim()}\nEMAIL;TYPE=WORK:${emailInput.value.trim()}\nORG:${companyInput.value.trim()}\nTITLE:${titleInput.value.trim()}\nURL:${websiteInput.value.trim()}\nADR;TYPE=WORK:;;${addressInput.value.trim()}\nEND:VCARD`;
         }
 
         let qrCodeInstance = null;
@@ -196,7 +201,7 @@ END:VCARD`;
         }
 
         // Event Listeners for inputs
-        [fullNameInput, phoneInput, emailInput, companyInput, titleInput, websiteInput, addressInput].forEach(input => {
+        [firstNameInput, lastNameInput, phoneInput, emailInput, companyInput, titleInput, websiteInput, addressInput].forEach(input => {
             input.addEventListener('input', generateQR);
         });
 
@@ -218,10 +223,11 @@ END:VCARD`;
 
         // Reset
         btnReset.addEventListener('click', function() {
-            if (confirm('Bạn có chắc muốn xóa sạch thông tin đã lưu?')) {
+            if (confirm('Are you sure you want to reset all data?')) {
                 localStorage.clear();
                 currentAvatarBase64 = '';
-                fullNameInput.value = '';
+                firstNameInput.value = '';
+                lastNameInput.value = '';
                 phoneInput.value = '';
                 emailInput.value = '';
                 companyInput.value = '';
@@ -235,14 +241,18 @@ END:VCARD`;
         });
 
         // Contact Picker API (Android Chrome)
-        if ('contacts' in navigator && 'SELECT' in navigator.contacts) {
+        if ('contacts' in navigator && 'select' in navigator.contacts) {
+            pickerSection.classList.remove('hidden');
             btnPickContact.addEventListener('click', async () => {
                 const supportedProps = ['name', 'tel', 'email', 'address', 'icon'];
                 try {
                     const contacts = await navigator.contacts.select(supportedProps, { multiple: false });
                     if (contacts && contacts.length > 0) {
                         const contact = contacts[0];
-                        if (contact.name && contact.name[0]) fullNameInput.value = contact.name[0];
+                        if (contact.name && contact.name[0]) {
+                            firstNameInput.value = contact.name[0].givenName || '';
+                            lastNameInput.value = contact.name[0].familyName || '';
+                        }
                         if (contact.tel && contact.tel[0]) phoneInput.value = contact.tel[0];
                         if (contact.email && contact.email[0]) emailInput.value = contact.email[0];
                         if (contact.address && contact.address[0]) {
@@ -265,8 +275,6 @@ END:VCARD`;
                     console.log('Contact picker error or cancelled', ex);
                 }
             });
-        } else {
-            document.getElementById('pickerSection').style.display = 'none'; // Ẩn nếu trình duyệt không hỗ trợ
         }
 
         // Save QR code as image
@@ -274,7 +282,6 @@ END:VCARD`;
             const canvas = qrcodeContainer.querySelector('canvas');
             if (!canvas) return;
             
-            // Create a temporary canvas to merge QR and Center Avatar for download
             const downloadCanvas = document.createElement('canvas');
             downloadCanvas.width = canvas.width;
             downloadCanvas.height = canvas.height;
@@ -289,7 +296,6 @@ END:VCARD`;
                     const x = (canvas.width - size) / 2;
                     const y = (canvas.height - size) / 2;
                     
-                    // Draw white circle background for avatar
                     ctx.fillStyle = '#ffffff';
                     ctx.beginPath();
                     ctx.arc(canvas.width/2, canvas.height/2, size/2 + 4, 0, Math.PI * 2);
@@ -322,9 +328,7 @@ END:VCARD`;
             if ('wakeLock' in navigator) {
                 try {
                     wakeLock = await navigator.wakeLock.request('screen');
-                } catch (err) {
-                    // Ignore if denied
-                }
+                } catch (err) {}
             }
         }
 
